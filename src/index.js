@@ -69,6 +69,30 @@ client.on('interactionCreate', async interaction => {
     if (interaction.options.getString('op_id')) {
         args.push(interaction.options.getString('op_id'));
     }
+    if (interaction.options.getString('rank')) {
+        args.push(interaction.options.getString('rank'));
+    }
+    if (interaction.options.getInteger('minutes')) {
+        args.push(interaction.options.getInteger('minutes').toString());
+    }
+    if (interaction.options.getInteger('amount')) {
+        args.push(interaction.options.getInteger('amount').toString());
+    }
+
+    // Handle Subcommands for 'op' and 'squad'
+    const subCommand = interaction.options.getSubcommand(false);
+    if (subCommand) {
+        args.push(subCommand);
+        if (interaction.options.getString('op_name')) {
+            args.push(...interaction.options.getString('op_name').split(' '));
+        }
+        if (interaction.options.getString('content')) {
+            args.push(...interaction.options.getString('content').split(' '));
+        }
+        if (interaction.options.getString('squad_name')) {
+            args.push(...interaction.options.getString('squad_name').split(' '));
+        }
+    }
 
     if (!client.commands.has(commandName)) return;
 

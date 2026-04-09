@@ -30,9 +30,10 @@ PREFIX=!
 GUILD_ID=your_discord_server_id_here
 DB_CHANNEL_ID=your_database_channel_id_here
 CLIENT_ID=your_bot_client_id_here
+APPLY_LINK=https://your-roblox-group-link.com
 ```
 
-*Note: Ensure the `DB_CHANNEL_ID` points to a private text channel where the bot has read, send, and attach files permissions. No regular members should have access to this channel.*
+*Note: Ensure the `DB_CHANNEL_ID` points to a private text channel where the bot has read, send, and attach files permissions. No regular members should have access to this channel. The bot will automatically create and prioritize a local `db.json` file to ensure persistence across restarts, using the channel as a backup.*
 
 ### 3. Discord Roles
 The bot automatically syncs rank and loadout assignments with Discord roles. For this feature to work, you must create roles in your server matching exactly the names configured in `src/utils/military.js`.
@@ -79,9 +80,15 @@ node src/index.js
 * `!ping` - Check connection to central command.
 * `!profile [@user]` - View military profile and stats.
 * `!record [@user]` - View the recent permanent service history for a soldier.
-* `!promote @user` - (Requires ManageRoles permission) Promotes to the next rank.
-* `!demote @user` - (Requires ManageRoles permission) Demotes to the previous rank.
+* `!promote @user [RankName]` - (Requires ManageRoles) Promotes to the next rank, or a specified rank.
+* `!demote @user [RankName]` - (Requires ManageRoles) Demotes to the previous rank, or a specified rank.
+* `!setrank @user <RankName>` - (Requires ManageRoles) Directly sets a soldier's rank.
 * `!assign_loadout @user <LoadoutName>` - (Requires ManageRoles permission) Assigns a combat role.
+* `!kick @user [reason]` - (Requires KickMembers) Discharge a soldier.
+* `!ban @user [reason]` - (Requires BanMembers) Dishonorably discharge a soldier.
+* `!timeout @user <minutes> [reason]` - (Requires ModerateMembers) Place a soldier in the brig.
+* `!purge <amount>` - (Requires ManageMessages) Clear communications from a channel.
+* `!apply` - Returns the enlistment link.
 * `!op schedule <OpName>` - Schedule a new operation.
 * `!op report <OpID> <AAR Content>` - Complete an operation and log AAR.
 * `!attend <OpID>` - Log your attendance for a scheduled operation.
