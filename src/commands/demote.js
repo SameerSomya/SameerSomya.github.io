@@ -21,11 +21,29 @@ module.exports = {
         const userData = client.db.getUser(targetUser.id);
         const currentRankIdx = Ranks.indexOf(userData.rank);
 
-        if (currentRankIdx <= 0) {
-            return message.reply('Soldier is already at the lowest rank (Sepoy) or has an invalid rank.');
-        }
+        let newRank;
 
-        const newRank = Ranks[currentRankIdx - 1];
+        // Check if an explicit rank argument was passed (e.g. !demote @user Sepoy)
+        if (args.length > 1) {
+            const requestedRankParts = args.slice(1).filter(arg => !arg.startsWith('<@') && !arg.endsWith('>'));
+            const requestedRank = requestedRankParts.join(' ');
+
+            newRank = Ranks.find(r => r.toLowerCase() === requestedRank.toLowerCase());
+
+            if (!newRank) {
+                return message.reply(`Invalid rank specified. Usage: !demote @user [RankName]`);
+            }
+
+            const newRankIdx = Ranks.indexOf(newRank);
+            if (newRankIdx >= currentRankIdx) {
+                return message.reply(`Soldier is currently a ${userData.rank}. Demotion requires a lower rank.`);
+            }
+        } else {
+            if (currentRankIdx <= 0) {
+                return message.reply('Soldier is already at the lowest rank (Sepoy) or has an invalid rank.');
+            }
+            newRank = Ranks[currentRankIdx - 1];
+        }
 
         try {
             // Find old role and remove

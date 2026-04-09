@@ -22,11 +22,29 @@ module.exports = {
         const userData = client.db.getUser(targetUser.id);
         const currentRankIdx = Ranks.indexOf(userData.rank);
 
-        if (currentRankIdx === -1 || currentRankIdx === Ranks.length - 1) {
-            return message.reply('Soldier is already at the maximum rank or has an invalid rank.');
-        }
+        let newRank;
 
-        const newRank = Ranks[currentRankIdx + 1];
+        // Check if an explicit rank argument was passed (e.g. !promote @user Captain)
+        if (args.length > 1) {
+            const requestedRankParts = args.slice(1).filter(arg => !arg.startsWith('<@') && !arg.endsWith('>'));
+            const requestedRank = requestedRankParts.join(' ');
+
+            newRank = Ranks.find(r => r.toLowerCase() === requestedRank.toLowerCase());
+
+            if (!newRank) {
+                return message.reply(`Invalid rank specified. Usage: !promote @user [RankName]`);
+            }
+
+            const newRankIdx = Ranks.indexOf(newRank);
+            if (newRankIdx <= currentRankIdx) {
+                return message.reply(`Soldier is already a ${userData.rank}. Promotion requires a higher rank.`);
+            }
+        } else {
+            if (currentRankIdx === -1 || currentRankIdx === Ranks.length - 1) {
+                return message.reply('Soldier is already at the maximum rank or has an invalid rank.');
+            }
+            newRank = Ranks[currentRankIdx + 1];
+        }
 
         // Discord Role Sync Logic
         try {
